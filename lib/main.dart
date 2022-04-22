@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:razorpay/models/models.dart';
+import 'package:razorpay/servives/services.dart';
 // import 'package:razorpay_plugin/razorpay_plugin.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
@@ -15,6 +17,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _razorpay = Razorpay();
+  var isLoaded = false;
+  Order? orderDetails;
+
+  getData() async {
+    orderDetails = await OrderHandle().getOrder();
+    setState(() {
+      isLoaded = true;
+    });
+  }
 
   @override
   void initState() {
@@ -22,6 +33,8 @@ class _MyAppState extends State<MyApp> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+
+    print("\n\n $orderDetails");
   }
 
   @override
@@ -46,11 +59,12 @@ class _MyAppState extends State<MyApp> {
 // MIr4H6uK6tebUGCpIYMGIHdp
 
   void openCheckout() async {
+    orderDetails = getData();
     var options = {
       'key': 'rzp_test_mWdZk20UX7IlbJ',
       'amount': 50000, //in the smallest currency sub-unit.
       'name': 'IIC TMSL',
-      'order_id': 'order_EMBFqjDHEEn80l', // Generate order_id using Orders API
+      'order_id': orderDetails!.id, // Generate order_id using Orders API
       'description': 'Envisage T-Shirt',
       'timeout': 60, // in seconds
       'prefill': {
