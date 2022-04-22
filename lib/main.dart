@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:razorpay/models/models.dart';
 import 'package:razorpay/servives/services.dart';
-// import 'package:razorpay_plugin/razorpay_plugin.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 void main() {
@@ -17,14 +16,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _razorpay = Razorpay();
-  var isLoaded = false;
   Order? orderDetails;
 
   getData() async {
     orderDetails = await OrderHandle().getOrder();
-    setState(() {
-      isLoaded = true;
-    });
   }
 
   @override
@@ -33,8 +28,6 @@ class _MyAppState extends State<MyApp> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-
-    print("\n\n $orderDetails");
   }
 
   @override
@@ -59,14 +52,14 @@ class _MyAppState extends State<MyApp> {
 // MIr4H6uK6tebUGCpIYMGIHdp
 
   void openCheckout() async {
-    orderDetails = getData();
+    getData();
     var options = {
       'key': 'rzp_test_mWdZk20UX7IlbJ',
       'amount': 50000, //in the smallest currency sub-unit.
       'name': 'IIC TMSL',
       'order_id': orderDetails!.id, // Generate order_id using Orders API
       'description': 'Envisage T-Shirt',
-      'timeout': 60, // in seconds
+      'timeout': 600, // in seconds
       'prefill': {
         'contact': '7679325872',
         'email': 'shubhayumajumdar@gmail.com'
@@ -81,29 +74,6 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  // startPayment() async {
-  //   Map<String, dynamic> options = new Map();
-  //   options.putIfAbsent("name", () => "Razorpay T-Shirt");
-  //   options.putIfAbsent(
-  //       "image", () => "https://www.73lines.com/web/image/12427");
-  //   options.putIfAbsent("description", () => "This is a real transaction");
-  //   options.putIfAbsent("amount", () => "100");
-  //   options.putIfAbsent("email", () => "test@testing.com");
-  //   options.putIfAbsent("contact", () => "9988776655");
-  //   options.putIfAbsent("order_id", () => "order_EMBFqjDHEEn80l");
-  //   //Must be a valid HTML color.
-  //   options.putIfAbsent("theme", () => "#FF0000");
-  //   options.putIfAbsent("api_key", () => "rzp_test_mWdZk20UX7IlbJ");
-  //   //Notes -- OPTIONAL
-  //   Map<String, String> notes = new Map();
-  //   notes.putIfAbsent('key', () => "value");
-  //   notes.putIfAbsent('randomInfo', () => "haha");
-  //   options.putIfAbsent("notes", () => notes);
-  //   Map<dynamic, dynamic> paymentResponse = new Map();
-  //   paymentResponse = await Razorpay.showPaymentForm(options);
-  //   print("response $paymentResponse");
-  // }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -117,7 +87,7 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: openCheckout,
                 icon: const Icon(Icons.payment),
               ),
               TextButton(

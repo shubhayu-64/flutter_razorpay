@@ -18,7 +18,7 @@ class Order {
     required this.currency,
     required this.receipt,
     required this.status,
-    required this.attempts,
+    this.attempts,
     required this.notes,
     required this.createdAt,
   });
@@ -31,7 +31,7 @@ class Order {
   String currency;
   String receipt;
   String status;
-  int attempts;
+  int? attempts;
   List<dynamic> notes;
   int createdAt;
 
